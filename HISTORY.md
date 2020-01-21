@@ -1,6 +1,5 @@
 # Version history
 
-
 ## v0.2.0
 * Add gulp-data support
 * Add gulp-notify

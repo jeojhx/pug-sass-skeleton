@@ -1,7 +1,7 @@
 {
   "name": "pug-sass-skeleton",
   "description": "Skeleton to create websites using Gulp as a task manager, SASS for CSS preprocessing and Pug to generate HTML effortlestly.",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "keywords": "gulp, sass, pug, node, skeleton",
   "license": "MIT",
   "author": {

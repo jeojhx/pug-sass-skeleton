@@ -1,0 +1,17 @@
+{
+    "site": {
+        "title": "Skeleton website - jeojhx",
+        "author": "jeojhx",
+        "meta": {
+            "charset": "utf8",
+            "description": "keleton website - jeojhx",
+            "keywords": "pug sass skeleton website sass jeojhx",
+            "favicon": "images/favicon.ico"
+        }
+    },
+    "content":{
+        "h1":"Example Pug file",
+        "body":"This text is from json from gulp-data.",
+        "image":"images/jeojhx.jpeg"
+    }
+}

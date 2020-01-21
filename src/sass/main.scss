@@ -1,0 +1,35 @@
+$texto:#20B32C;
+$primary: #EDD54F;
+$secondary: #5F0000;
+
+@font-face {
+    font-family: 'Some Static Font';
+    src: url('../fonts/some_static_font.woff2') format('woff2'),
+        url('../fonts/some_static_font.woff') format('woff');
+}
+
+
+$fons-sans: "Helvetica Neue", "Helvetica", Verdana, sans-serif;
+$font-some: "Some Static Font", serif;
+
+
+body {
+   font-family: $fons-sans;
+}
+
+.bg-primary{
+    background: $primary !important;
+    color:$secondary !important;
+}
+
+.text-uppercase {
+   text-transform: uppercase;
+}
+
+.text-styled {
+   font-family: $font-some;
+}
+
+h1 {
+   @extend .text-uppercase;
+}

@@ -9,11 +9,16 @@ const pug = require('gulp-pug');
 const data = require('gulp-data');
 const cssmin = require('gulp-cssmin');
 const imagemin = require('gulp-imagemin');
+const imageminGifsicle = require("imagemin-gifsicle");
+const imageminJpegtran = require("imagemin-jpegtran");
+const imageminOptipng = require("imagemin-optipng");
+const imageminSvgo = require("imagemin-svgo");
 const uglify = require('gulp-uglify');
 const rename = require('gulp-rename');
 const connect = require('gulp-connect');
 var path = require('path');
 var fs = require('fs');
+
 
 
 
@@ -98,10 +103,10 @@ gulp.task('imagemin', () =>
     gulp.src(SRC_FILES.images)
     .pipe(plumber())
     .pipe(imagemin([
-        imagemin.gifsicle({ interlaced: true }),
-        imagemin.jpegtran({ quality: 75, progressive: true }),
-        imagemin.optipng({ optimizationLevel: 5 }),
-        imagemin.svgo({
+        imageminGifsicle({interlaced: true}),
+        imageminJpegtran({ quality: 75, progressive: true }),
+        imageminOptipng({ optimizationLevel: 5 }),
+        imageminSvgo({
             plugins: [
                 { removeViewBox: true },
                 { cleanupIDs: false }
@@ -129,5 +134,5 @@ gulp.task('webserver', () =>
     })
 );
 
-gulp.task('default', ['sass', 'pug', 'imagemin', 'jsmin', 'copyAssets']);
-gulp.task('server', ['default', 'webserver', 'watch']);
+gulp.task('default', gulp.series('sass', 'pug', 'imagemin', 'jsmin', 'copyAssets'));
+gulp.task('server', gulp.series('default', 'webserver', 'watch'));

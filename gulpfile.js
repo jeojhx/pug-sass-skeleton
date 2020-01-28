@@ -177,10 +177,10 @@ gulp.task('webserver', () =>{
 
 // Watch Task
 gulp.task('watch', () => {
-    gulp.watch(SRC_FILES.fnt, gulp.series('sass'));
     gulp.watch(SRC_FILES.sass, gulp.series('sass'));
     gulp.watch(SRC_FILES.js, gulp.series('jsmin'));
     gulp.watch(SRC_FILES.images, gulp.series('imagemin'));
+    gulp.watch([SRC_FILES.fnt, SRC_FILES.fontawesome], gulp.series('fontawesome'));
     gulp.watch(SRC_FILES.assets, gulp.series('copyAssets'));
     gulp.watch([SRC_FILES.pugData, SRC_FILES.pug, SRC_FILES.pugTemplates], gulp.series('pug'));
 });

@@ -6,19 +6,27 @@ html(lang="en")
 		meta(name="keywords" , content=site.meta.keywords)
 		meta(name="description", content=site.meta.description)
 		link(rel="stylesheet" href="css/bootstrap.min.css")
+		link(rel="stylesheet" href="css/fontawesome.min.css")
 		link(rel="stylesheet", href="css/main.min.css")
 		link(rel="icon", href=site.meta.favicon)
 	body.bg-primary
-		header
-			h1 #{content.h1}
-		p.text-styled This text uses a font from ./source/assets/fonts
-		p Which is different from this font
-		br
-		p #{content.body}
-		br
-		p.text-center This text is centered using a static CSS from ./source/assets/css
-		button(class ="btn btn-success", onclick="minifiedAssetsFunction()") This button calls a function from ./source/assets/js
-		p And this is a static image copied from ./source/assets/images:
-		div
-			img(class="img-thumbnail", src=content.image)
+		.container
+			.col-12
+				header
+					h1 #{content.h1}
+				p.text-styled This text uses a font from ./source/assets/fonts
+				p Which is different from this font
+				br
+				p #{content.body}
+				br
+				p.text-center This text is centered using a static CSS from ./source/assets/css
+				button(class ="btn btn-success", onclick="minifiedAssetsFunction()") This button calls a function from ./source/assets/js
+				p And this is a static image copied from ./source/assets/images:
+				div
+					img(class="img-thumbnail", src=content.image)
+				p Add Fontawesome:
+				p
+					i.fas.fa-camera
+					span.fas.fa-camera
+					i.fas.fa-spinner.fa-w-16.fa-spin.fa-lg
 		script(src="js/all.min.js")

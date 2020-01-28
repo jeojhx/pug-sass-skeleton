@@ -1,7 +1,7 @@
 {
   "name": "pug-sass-skeleton",
   "description": "Skeleton to create websites using Gulp as a task manager, SASS for CSS preprocessing and Pug to generate HTML effortlestly.",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "keywords": "gulp, sass, pug, node, skeleton",
   "license": "MIT",
   "author": {
@@ -44,6 +44,7 @@
     "path": "^0.12.7"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.12.0",
     "@popperjs/core": "^2.0.1",
     "bootstrap": "^4.4.1",
     "jquery": "^3.4.1",

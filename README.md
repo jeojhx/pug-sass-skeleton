@@ -4,6 +4,9 @@ This is a skeleton to build static websties using Pug and Sass, plus a live-relo
   * **Gulp** to automate build tasks, plus Gulp Connect to provide a local server with live reload .
   * **Pug** template engine to streamline html writing.
   * **Sass**, to modularize and minimize the CSS written.
+  * **Bootstrap**, Framework front-end.
+  * **Jquery**, Framework Javascript.
+  * **Font-Awesome**,  Icons and social logos
 
 Extra things to make your website faster:
  * **CSS minification**: both CSS and SASS files are automatically minified.
@@ -16,7 +19,7 @@ Extra things to make your website faster:
   1. Clone locally or download this repo, e.g.:
     * ``
   1. Install (if you don't have them):
-    * [Node.js](http://nodejs.org): Just download v10.18.1 and install. Alternatively, if you're on OS X, you can do  `brew install node` .
+    * [Node.js](http://nodejs.org): Just download v13.5.0 and install. Alternatively, if you're on OS X, you can do  `brew install node` .
     * [Gulp](http://gulpjs.com): In a shell console type `npm install -g gulp-cli`.
     * Gulp plugins and app dependencies: Open the repo directory in the console and type `npm install` or, shorter, `npm i`.
 	  * This will install any neded Node modules (cssmin, Pug, sass...)
@@ -43,9 +46,11 @@ Within the download you'll find the following directories and files:
 │   └── sass	           SASS files to be processed by gulp-less.
 │       ├── style.sass	    Sample style.
 │       └── *.sass 	        Your sass files.
-├── public                Build directory. Don't put anything here, Gulp does.
+├── public                 Build directory. Don't put anything here, Gulp does.
 │   ├── css	               Minified CSS from assets and compiled LESS.
-│   ├── fonts	           Copied asset fonts.
+│   │                      Bootstrap and FontAwesome
+│   ├── fonts	             Copied asset fonts.
+│   ├── webfonts           Copied asset fonts from fontawesome.
 │   ├── images	           Minfied asset images.
 │   ├── js 	               Copied asset Javascript.
 │   ├── robots.txt 	       Copied asset robots.txt.
@@ -64,11 +69,13 @@ Everything is run with **Gulp**.
 Defined gulp tasks are:
   * `gulp` to run all default tasks only once
   * `gulp server` to run all tasks AND start the webserver plus a watch task. This will automatically process changes, in real time, in your source files and make them available in the local web server, and will also automatically reload your browser.
-
+  * `gulp dev` remove public folder and then run all tasks AND start the webserver plus a watch task.
+  * `gulp clean` remove  public folder
+  
 ### Test it
 
   * Run `gulp server`
-  * Open `http://localhost:8000` in your browser. This simple html files contains some hints if you don't know how to start.
+  * Open `http://localhost:3000` in your browser. This simple html files contains some hints if you don't know how to start.
 
 ### Modifying gulp tasks
 

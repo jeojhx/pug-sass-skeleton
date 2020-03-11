@@ -1,4 +1,10 @@
 # Version history
+## v0.4.0
+* Add Fontawesome from npm
+
+## v0.3.0
+* Add bootstrap from npm
+* ADD jquery from npm
 
 ## v0.2.0
 * Add gulp-data support

@@ -1,26 +1,39 @@
 'use strict';
-
+//gulp and utils libraries
 const gulp = require('gulp');
-const sass = require('gulp-sass');
 const plumber = require('gulp-plumber');
-const stripJsonComments = require('gulp-strip-json-comments');
 const notify = require('gulp-notify');
+const addsrc = require('gulp-add-src');
+const rename = require('gulp-rename');
+const sourcemaps = require('gulp-sourcemaps');
+
+const path = require('path');
+const fs = require('fs');
+const del = require("del");
+
+//Sass compiler and minified css libs
+const sass = require('gulp-sass');
+const cleanCSS = require('gulp-clean-css');
+const autoprefixer = require('gulp-autoprefixer');
+
+//Pug Templates compiler libs
 const pug = require('gulp-pug');
 const data = require('gulp-data');
-const cssmin = require('gulp-cssmin');
+
+//Concat and minfied mangle JS Libs
+const babel = require('gulp-babel');
+const uglify = require('gulp-uglify');
+const concat = require('gulp-concat');
+
+//Images compression Libs
 const imagemin = require('gulp-imagemin');
 const imageminGifsicle = require("imagemin-gifsicle");
 const imageminJpegtran = require("imagemin-jpegtran");
 const imageminOptipng = require("imagemin-optipng");
 const imageminSvgo = require("imagemin-svgo");
-const uglify = require('gulp-uglify');
-const rename = require('gulp-rename');
-const connect = require('gulp-connect');
-var path = require('path');
-var fs = require('fs');
 
-
-
+//Server
+const browserSync = require('browser-sync').create();
 
 // Source folder configuration
 const SRC_DIR = {};
@@ -30,17 +43,20 @@ SRC_DIR.img = SRC_DIR.root + 'images/';
 SRC_DIR.js = SRC_DIR.root + 'js/';
 SRC_DIR.sass = SRC_DIR.root + 'sass/';
 SRC_DIR.pug = SRC_DIR.root + 'pug/';
-SRC_DIR.data = SRC_DIR.root +'data/';
+SRC_DIR.data = SRC_DIR.root + 'data/';
+SRC_DIR.fontawesome = './node_modules/@fortawesome/fontawesome-free/';
 
 // Source file matchers, using respective directories
 const SRC_FILES = {
-    sass: [SRC_DIR.sass + '*.scss', SRC_DIR.sass + '*.sass'],
+    sass: SRC_DIR.sass + '*.scss',
     pugTemplates: SRC_DIR.pug + 'templates/*.pug',
     pugData: SRC_DIR.data+'**/*.json',
     pug: SRC_DIR.pug + '*.pug',
     js: SRC_DIR.js + '**/*.js',
     images: SRC_DIR.img + '**/*',
-    assets: SRC_DIR.assets + '**/*'
+    assets: SRC_DIR.assets + '**/*',
+    fnt: SRC_DIR.fontawesome + 'webfonts/*',
+    fontawesome: SRC_DIR.fontawesome + 'css/all.css'
 };
 
 // Output directories
@@ -49,41 +65,52 @@ PUB_DIR.root = './public/';
 PUB_DIR.js = PUB_DIR.root + 'js/';
 PUB_DIR.css = PUB_DIR.root + 'css/';
 PUB_DIR.cssFiles = PUB_DIR.root + 'css/style.css';
-PUB_DIR.fnt = PUB_DIR.root + 'fonts/';
+PUB_DIR.fnt = PUB_DIR.root + 'webfonts/';
 PUB_DIR.img = PUB_DIR.root + 'images/';
 
+//*****************TASKS*****************
 
-// TASKS
+//Adding Bootstrap Framework
+//Sass compiler
+gulp.task('sass', () =>
+    gulp.src([
+        'node_modules/bootstrap/scss/bootstrap.scss',
+        SRC_FILES.sass
+    ])
+    .pipe(sourcemaps.init())
+    .pipe(sass({outputStyle: 'compressed'}).on('error', err => console.log(err)))
+    .pipe(autoprefixer())
+    .pipe(cleanCSS({ compatibility: 'ie8' }))
+    .pipe(rename({ suffix: '.min' }))
+    .pipe(sourcemaps.write('source-maps'))
+    .pipe(gulp.dest(PUB_DIR.css))
+    .pipe(notify("SASS and CSS finished"))
+);
 
-gulp.task('watch', () => {
-    gulp.watch(SRC_FILES.sass, ['sass']);
-    gulp.watch([SRC_FILES.pugData, SRC_FILES.pug, SRC_FILES.pugTemplates], ['pug']);
-    gulp.watch(SRC_FILES.images, ['imagemin']);
-    gulp.watch(SRC_FILES.assets.onlyCopy, ['copyAssets']);
-});
-
+//Adding Bootstrap and JQuery
+// JS minified
 gulp.task('jsmin', () =>
-    gulp.src(SRC_FILES.js)
+    gulp.src('node_modules/jquery/dist/jquery.slim.js')
+    .pipe(addsrc.append('node_modules/@popperjs/core/dist/umd/popper.js'))
+    .pipe(addsrc.append('node_modules/bootstrap/dist/js/bootstrap.js'))
+    .pipe(addsrc.append(SRC_FILES.js))
+    .pipe(plumber())
+    .pipe(sourcemaps.init())
+    .pipe(babel({
+        presets: ['@babel/preset-env']
+    }))
+    .pipe(concat('all.js'))
     .pipe(uglify())
     .pipe(rename({ suffix: '.min' }))
+    .pipe(sourcemaps.write('source-maps'))
     .pipe(gulp.dest(PUB_DIR.js))
-    .pipe(connect.reload())
+    .pipe(notify("Js finished"))
 );
 
-gulp.task('sass', () =>
-    gulp.src(SRC_FILES.sass)
-    .pipe(sass().on('error', err => console.log(err)))
-    .pipe(gulp.dest(PUB_DIR.css))
-    .pipe(cssmin())
-    .pipe(rename({ suffix: '.min' }))
-    .pipe(gulp.dest(PUB_DIR.css))
-    .pipe(connect.reload())
-);
-
+//Html render, pug files
 gulp.task('pug', () =>
     gulp.src(SRC_FILES.pug)
     .pipe(plumber())
-    .pipe(stripJsonComments())
     .pipe(data(function(file) {
         return JSON.parse(fs.readFileSync(SRC_DIR.data + path.basename(file.path) + '.json'));
     }))
@@ -95,10 +122,10 @@ gulp.task('pug', () =>
         var relPath = file.base.substr(pugIndex + 4);
         return PUB_DIR.root + relPath;
     }))
-    .pipe(notify("HTML renderizado"))
-    .pipe(connect.reload())
+    .pipe(notify("HTML finished"))
 );
 
+//Image compression
 gulp.task('imagemin', () =>
     gulp.src(SRC_FILES.images)
     .pipe(plumber())
@@ -114,25 +141,53 @@ gulp.task('imagemin', () =>
         })
     ]))
     .pipe(gulp.dest(PUB_DIR.img))
-    .pipe(notify("Imagenes comprimidas"))
-    .pipe(connect.reload())
+    .pipe(notify("Iamges finished"))
 );
 
+// Copy Assets to public folder
 gulp.task('copyAssets', () =>
     gulp.src(SRC_FILES.assets)
     .pipe(gulp.dest(PUB_DIR.root))
-    .pipe(notify("Assets copiados"))
-    .pipe(connect.reload())
+    .pipe(notify("Copied assets"))
 );
 
-gulp.task('webserver', () =>
-    connect.server({
-        root: 'public',
-        livereload: true,
-        port: 8000,
-        host: 'localhost'
+gulp.task('fontawesome', ()=>{
+    gulp.src(SRC_FILES.fnt)
+    .pipe(gulp.dest(PUB_DIR.fnt)).
+    pipe(notify("Copied fonts"))
+
+    return gulp.src(SRC_FILES.fontawesome)
+    .pipe(sourcemaps.init())
+    .pipe(rename({ basename:'fontawesome' ,suffix: '.min' }))
+    .pipe(sourcemaps.write('source-maps'))
+    .pipe(gulp.dest(PUB_DIR.css))
+    .pipe(notify("fontawesome finished"))
+});
+
+// Server
+gulp.task('webserver', () =>{
+    //initialize browsersync
+    browserSync.init({
+        server: {
+            baseDir: './public'
+        }
     })
-);
+    gulp.watch(['./public/*.*','./public/**/*.*']).on('change', browserSync.reload)
+});
 
-gulp.task('default', gulp.series('sass', 'pug', 'imagemin', 'jsmin', 'copyAssets'));
-gulp.task('server', gulp.series('default', 'webserver', 'watch'));
+// Watch Task
+gulp.task('watch', () => {
+    gulp.watch(SRC_FILES.sass, gulp.series('sass'));
+    gulp.watch(SRC_FILES.js, gulp.series('jsmin'));
+    gulp.watch(SRC_FILES.images, gulp.series('imagemin'));
+    gulp.watch([SRC_FILES.fnt, SRC_FILES.fontawesome], gulp.series('fontawesome'));
+    gulp.watch(SRC_FILES.assets, gulp.series('copyAssets'));
+    gulp.watch([SRC_FILES.pugData, SRC_FILES.pug, SRC_FILES.pugTemplates], gulp.series('pug'));
+});
+
+// Remove existing docs in public folder
+gulp.task('clean', del.bind(null, ['./public']));
+
+gulp.task('default', gulp.series('clean','sass', 'jsmin', 'fontawesome','copyAssets', 'pug','imagemin'));
+gulp.task('server', gulp.parallel('webserver', 'watch' ));
+gulp.task('dev', gulp.series('clean', 'default', 'server'));

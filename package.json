@@ -1,5 +1,5 @@
 {
-  "name": "pug-sass-skeleton",
+  "name": "pug-sass-skeleton", 
   "description": "Skeleton to create websites using Gulp as a task manager, SASS for CSS preprocessing and Pug to generate HTML effortlestly.",
   "version": "0.4.0",
   "keywords": "gulp, sass, pug, node, skeleton",
